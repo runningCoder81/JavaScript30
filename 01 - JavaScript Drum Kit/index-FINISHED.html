@@ -59,6 +59,17 @@
 
 <script>
   function removeTransition(e) {
+    console.log(e.propertyName);
+    // This is from a transitionend event so the propertyName is a list
+    // of css properties on the transition: look at .playing in style.css, this
+    // the list of propertyNames except for animation. transform is on the list.
+    // If .key had the prop color instead of all - transition: all .07s ease; - it would not work,
+    // but you could use any property from .playing transform being one of them,
+    // another one wold be box-shadow.
+    // By using transition: all .07s ease; - all - you can pick from the list -
+    // transform is on the list.
+
+    // Find out why this gets run twice...
     if (e.propertyName !== 'transform') return;
     e.target.classList.remove('playing');
   }
@@ -71,11 +82,13 @@
     key.classList.add('playing');
     audio.currentTime = 0;
     audio.play();
+    key.addEventListener('transitioned', myPractice(e));
+
   }
 
-  const keys = Array.from(document.querySelectorAll('.key'));
-  keys.forEach(key => key.addEventListener('transitionend', removeTransition));
-  window.addEventListener('keydown', playSound);
+   const keys = Array.from(document.querySelectorAll('.key'));
+   keys.forEach(key => key.addEventListener('transitionend', removeTransition));
+   window.addEventListener('keydown', playSound);
 </script>
 
 
@@ -95,4 +108,5 @@ querySelector
 querySelectorAll
 keyCode
 Array.from
+// - the eventListener transitionend
 addEventListener - transitionend -->
